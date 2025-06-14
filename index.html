@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azeroth Automation</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        h1 { margin-bottom: 1rem; font-size: 2.5rem; }
+        .status { margin: 1rem 0; padding: 1rem; background: rgba(0, 255, 0, 0.2); border-radius: 5px; }
+        .ssl-status { margin: 1rem 0; padding: 1rem; border-radius: 5px; }
+        .ssl-secure { background: rgba(0, 255, 0, 0.2); }
+        .ssl-insecure { background: rgba(255, 255, 0, 0.2); }
+        .api-test { margin: 2rem 0; }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        button:hover { background: #45a049; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛡️ Azeroth Automation</h1>
+        <div class="status">
+            <h3>Server Status: Online</h3>
+            <p id="timestamp"></p>
+        </div>
+        
+        <div id="sslStatus" class="ssl-status">
+            <h3>🔒 SSL Status</h3>
+            <p id="sslText"></p>
+        </div>
+        
+        <div class="api-test">
+            <button onclick="testAPI()">Test API Connection</button>
+            <div id="apiResult"></div>
+        </div>
+    </div>
+
+    <script>
+        // Update timestamp
+        document.getElementById('timestamp').textContent = new Date().toLocaleString();
+        
+        // Check SSL status
+        const isSecure = location.protocol === 'https:';
+        const sslStatus = document.getElementById('sslStatus');
+        const sslText = document.getElementById('sslText');
+        
+        if (isSecure) {
+            sslStatus.className = 'ssl-status ssl-secure';
+            sslText.textContent = 'SSL Certificate Active - Secure Connection';
+        } else {
+            sslStatus.className = 'ssl-status ssl-insecure';
+            sslText.textContent = 'Development Mode - HTTP Connection';
+        }
+        
+        // API test function
+        async function testAPI() {
+            const resultDiv = document.getElementById('apiResult');
+            try {
+                // For GitHub Pages, show static response
+                const data = {
+                    server: 'azerothautomation.github.io',
+                    version: '1.0.0',
+                    environment: 'github-pages',
+                    status: 'deployed'
+                };
+                resultDiv.innerHTML = `
+                    <div style="margin-top: 1rem; padding: 1rem; background: rgba(0, 255, 0, 0.2); border-radius: 5px;">
+                        <h4>✅ GitHub Pages Deployment</h4>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div style="margin-top: 1rem; padding: 1rem; background: rgba(255, 0, 0, 0.2); border-radius: 5px;">
+                        <h4>❌ API Error</h4>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
