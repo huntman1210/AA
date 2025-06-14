@@ -82,24 +82,32 @@
         async function testAPI() {
             const resultDiv = document.getElementById('apiResult');
             try {
-                // For GitHub Pages, show static response
-                const data = {
-                    server: 'azerothautomation.github.io',
-                    version: '1.0.0',
-                    environment: 'github-pages',
-                    status: 'deployed'
-                };
+                // Test actual server endpoint
+                const response = await fetch('/api/status');
+                const data = await response.json();
+                
                 resultDiv.innerHTML = `
                     <div style="margin-top: 1rem; padding: 1rem; background: rgba(0, 255, 0, 0.2); border-radius: 5px;">
-                        <h4>✅ GitHub Pages Deployment</h4>
+                        <h4>✅ Server API Response</h4>
                         <pre>${JSON.stringify(data, null, 2)}</pre>
                     </div>
                 `;
             } catch (error) {
+                // Fallback to show static info if no API endpoint
+                const data = {
+                    server: 'azerothautomation.com',
+                    version: '1.0.0',
+                    environment: 'namecheap-hosting',
+                    status: 'deployed',
+                    ssl: location.protocol === 'https:' ? 'enabled' : 'disabled',
+                    domain: window.location.hostname,
+                    timestamp: new Date().toISOString()
+                };
                 resultDiv.innerHTML = `
-                    <div style="margin-top: 1rem; padding: 1rem; background: rgba(255, 0, 0, 0.2); border-radius: 5px;">
-                        <h4>❌ API Error</h4>
-                        <p>${error.message}</p>
+                    <div style="margin-top: 1rem; padding: 1rem; background: rgba(255, 255, 0, 0.2); border-radius: 5px;">
+                        <h4>⚠️ Static Mode (No API)</h4>
+                        <p>API endpoint not available, showing static data</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
                     </div>
                 `;
             }
